@@ -51,4 +51,10 @@ npm -v
      GOOGLE_GEOLOCATION_API_KEY=YOUR_API_KEY_GOES_HERE
      OPEN_WEATHER_API_KEY=YOUR_API_KEY_GOES_HERE
 
+   * Add [dotenv-webpack](https://www.npmjs.com/package/dotenv-webpack) setting into Webpack config files. The config files can be found with the following command.
+
+     ```bash
+     ls node_modules/react-scripts-ts/config/ | grep webpack.config
+     ```
+
    For more information about _'.env'_, please visit [dotenv-webpack](https://www.npmjs.com/package/dotenv-webpack)
