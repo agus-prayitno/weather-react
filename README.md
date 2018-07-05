@@ -2,7 +2,7 @@
 
 ## Overview
 
-A weather application that displays the current weather and hourly forecasts based on the current geolocation of accessing device.
+A simple weather application which shows the current weather and hourly forecasts based on the current geolocation of accessing device.
 
 ## Prerequisites
 
@@ -13,7 +13,7 @@ The following software is required to be installed on your system:
 * Node 10.x
 * Npm 6.x
 
-Type the following commands in the terminal to verify your node and npm versions
+Type the following commands in the terminal to verify your Node and Npm versions.
 
 ```bash
 node -v
@@ -26,15 +26,15 @@ npm -v
 
    * OpenWeather API
 
-     Read the description and specs at [OpenWeather API](http://openweathermap.org/api)
+     Read the description and specs at [OpenWeather API](http://openweathermap.org/api).
 
-     Get an API key [here](http://openweathermap.org/appid)
+     Get an API key [here](http://openweathermap.org/appid).
 
    * Google Geolocation API
 
-     Read the description and specs at [Google Geolocation API](https://developers.google.com/maps/documentation/geolocation/intro)
+     Read the description and specs at [Google Geolocation API](https://developers.google.com/maps/documentation/geolocation/intro).
 
-     Get an API key [here](https://developers.google.com/maps/documentation/geolocation/get-api-key)
+     Get an API key [here](https://developers.google.com/maps/documentation/geolocation/get-api-key).
 
 1. Setup environment variables
 
@@ -44,17 +44,19 @@ npm -v
 
    * Add _'.env'_ file
 
-     Create a file called _'.env'_ at the root of the application
+     Create a file called _'.env'_ at the root of the application.
 
    * Add environment variables to _'.env'_ file
 
-     GOOGLE_GEOLOCATION_API_KEY=YOUR_API_KEY_GOES_HERE
-     OPEN_WEATHER_API_KEY=YOUR_API_KEY_GOES_HERE
+     GOOGLE_GEOLOCATION_API_KEY=PUT_YOUR_API_KEY_HERE
+     OPEN_WEATHER_API_KEY=PUT_YOUR_API_KEY_HERE
 
-   * Add [dotenv-webpack](https://www.npmjs.com/package/dotenv-webpack) setting into Webpack config files. The config files can be found with the following command.
+   * Add [dotenv-webpack](https://www.npmjs.com/package/dotenv-webpack) setting into Webpack config files
+
+      The config files can be found by typing the following command in the terminal.
 
      ```bash
      ls node_modules/react-scripts-ts/config/ | grep webpack.config
      ```
 
-   For more information about _'.env'_, please visit [dotenv-webpack](https://www.npmjs.com/package/dotenv-webpack)
+   For more information about _'.env'_, please visit [dotenv-webpack](https://www.npmjs.com/package/dotenv-webpack).
