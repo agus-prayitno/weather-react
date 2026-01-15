@@ -1,0 +1,7 @@
+@use './settings' as settings;
+
+body {
+    background-color: settings.$smoke;
+    font-family: settings.$font-family;
+    height: 100%;
+}

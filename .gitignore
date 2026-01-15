@@ -32,6 +32,11 @@ bower_components
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
 
+# Vite build output
+dist/
+dist-ssr/
+*.local
+
 # Dependency directories
 node_modules/
 jspm_packages/
@@ -56,6 +61,8 @@ typings/
 
 # dotenv environment variables file
 .env
+.env.local
+.env.*.local
 
 # next.js build output
 .next

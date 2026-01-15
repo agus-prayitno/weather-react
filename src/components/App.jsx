@@ -1,5 +1,5 @@
-import { Header } from './Header';
-import { WeatherDashboard } from './Weather/WeatherDashboard';
+import { Header } from './Header.jsx';
+import { WeatherDashboard } from './Weather/WeatherDashboard.jsx';
 
 const App = () => (
     <div>

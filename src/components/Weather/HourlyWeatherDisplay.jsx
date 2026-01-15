@@ -6,7 +6,7 @@ import { Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 
-import { HourlyWeatherForecastCard } from './HourlyWeatherForecastCard';
+import { HourlyWeatherForecastCard } from './HourlyWeatherForecastCard.jsx';
 
 
 class HourlyWeatherDisplay extends Component {

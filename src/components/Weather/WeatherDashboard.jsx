@@ -1,7 +1,7 @@
 import { Component } from 'react';
 
-import { CurrentWeatherDisplay } from './CurrentWeatherDisplay';
-import { HourlyWeatherDisplay } from './HourlyWeatherDisplay';
+import { CurrentWeatherDisplay } from './CurrentWeatherDisplay.jsx';
+import { HourlyWeatherDisplay } from './HourlyWeatherDisplay.jsx';
 
 import { WeatherService } from '../../services/WeatherService';
 import { GeolocationService } from '../../services/GeolocationService';

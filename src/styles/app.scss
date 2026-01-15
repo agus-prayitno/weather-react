@@ -1,7 +1,7 @@
-@import '_settings.scss';
-@import '_base.scss';
-@import '_bootstrap.scss';
-@import './components/_header.scss';
-@import './components/Weather/_current-weather-display.scss';
-@import './components/Weather/_daily-weather-display.scss';
-@import './components/Weather/_hourly-weather-display.scss';
+@use './settings' as settings;
+@use './base' as base;
+@use './bootstrap' as bootstrap;
+@use './components/header' as header;
+@use './components/weather/current-weather-display' as currentWeather;
+@use './components/weather/daily-weather-display' as dailyWeather;
+@use './components/weather/hourly-weather-display' as hourlyWeather;
