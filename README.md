@@ -10,8 +10,8 @@ A simple weather application which shows the current weather and hourly forecast
 
 The following software is required to be installed on your system:
 
-* Node 10.x
-* Npm 6.x
+- Node 22.21.0+
+- Npm 11.0.0+
 
 Type the following commands in the terminal to verify your Node and Npm versions.
 
@@ -22,41 +22,29 @@ npm -v
 
 ### External APIs
 
-1. Get API keys
+This application uses **Open-Meteo** for weather data, which requires:
 
-   * OpenWeather API
+- ✅ No API key
+- ✅ No registration
+- ✅ No payment method
+- ✅ Completely free
 
-     Read the description and specs at [OpenWeather API](http://openweathermap.org/api).
+**Geolocation** is handled by the browser's built-in Geolocation API, which requires user permission.
 
-     Get an API key [here](http://openweathermap.org/appid).
+For more information about Open-Meteo, visit [open-meteo.com](https://open-meteo.com/).
 
-   * Google Geolocation API
+### Setup
 
-     Read the description and specs at [Google Geolocation API](https://developers.google.com/maps/documentation/geolocation/intro).
+1. Install dependencies:
 
-     Get an API key [here](https://developers.google.com/maps/documentation/geolocation/get-api-key).
+   ```bash
+   npm install --legacy-peer-deps
+   ```
 
-1. Setup environment variables
+2. Start the application:
 
-   It is required to setup a few environment variables that are used by the _WeatherService_ and _GeolocationService_ to authenticate against the above external APIs.
+   ```bash
+   npm start
+   ```
 
-   Please follow the following steps:
-
-   * Add _'.env'_ file
-
-     Create a file called _'.env'_ at the root of the application.
-
-   * Add environment variables to _'.env'_ file
-
-     GOOGLE_GEOLOCATION_API_KEY=PUT_YOUR_API_KEY_HERE
-     OPEN_WEATHER_API_KEY=PUT_YOUR_API_KEY_HERE
-
-   * Add [dotenv-webpack](https://www.npmjs.com/package/dotenv-webpack) setting into Webpack config files
-
-      The config files can be found by typing the following command in the terminal.
-
-     ```bash
-     ls node_modules/react-scripts-ts/config/ | grep webpack.config
-     ```
-
-   For more information about _'.env'_, please visit [dotenv-webpack](https://www.npmjs.com/package/dotenv-webpack).
+3. When prompted by your browser, allow location access to retrieve weather data.

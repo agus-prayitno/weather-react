@@ -1,33 +1,46 @@
-import axios from 'axios';
-
-const BASE_URL = 'https://www.googleapis.com/geolocation/v1/geolocate';
-const API_KEY = process.env.GOOGLE_GEOLOCATION_API_KEY;
-
+/**
+ * GeolocationService - Uses browser's built-in Geolocation API
+ * No API key required - completely free
+ */
 class GeolocationService {
 
     public getCurrentPosition() {
-        const url = `${BASE_URL}?key=${API_KEY}`;
-
         return new Promise((resolve, reject) => {
-            axios
-                .post(url, { considerIp: true })
-                .then(response => {
-                    if (response && response.status === 200) {
-                        const { lat, lng } = response.data.location;
-                        resolve({
-                            latitude: lat,
-                            longitude: lng
-                        });
-                    } else {
-                        reject('Unable to retrieve current location');
+            if (!navigator.geolocation) {
+                reject('Geolocation is not supported by this browser');
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    resolve({
+                        latitude,
+                        longitude
+                    });
+                },
+                (error) => {
+                    let errorMessage = 'Unable to retrieve current location';
+                    switch (error.code) {
+                        case error.PERMISSION_DENIED:
+                            errorMessage = 'Permission denied. Please enable location access.';
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            errorMessage = 'Location information is unavailable.';
+                            break;
+                        case error.TIMEOUT:
+                            errorMessage = 'Location request timed out.';
+                            break;
                     }
-                })
-                .catch(error => {
-                    const { errors } = error.response.data.error;
-                    if (errors && errors.length > 0) {
-                        errors.forEach(((e: any) => console.log(`Error: ${e.message}, Reason: ${e.reason}`)));
-                    }
-                });
+                    console.error(`Geolocation Error: ${errorMessage}`);
+                    reject(errorMessage);
+                },
+                {
+                    timeout: 10000,
+                    maximumAge: 0,
+                    enableHighAccuracy: false
+                }
+            );
         });
     }
 }

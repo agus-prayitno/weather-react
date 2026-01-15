@@ -1,17 +1,14 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import App from './components/App';
 
 import './styles/app.scss';
-
-import 'react-owl-carousel2/lib/styles.css'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 import registerServiceWorker from './registerServiceWorker';
 
-ReactDOM.render(
-  <App />,
-  document.getElementById('app') as HTMLElement
+const root = createRoot(document.getElementById('app') as HTMLElement);
+root.render(
+  <App />
 );
 registerServiceWorker();

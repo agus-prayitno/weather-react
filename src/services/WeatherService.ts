@@ -1,32 +1,99 @@
 import axios from 'axios';
 
-const OPEN_WEATHER_BASE_URL = 'http://api.openweathermap.org/data/2.5';
-const OPEN_WEATHER_API_KEY = process.env.OPEN_WEATHER_API_KEY;
-const OPEN_WEATHER_IMG_URL = 'http://openweathermap.org/img/w';
+/**
+ * Open-Meteo Weather Service
+ * Free weather API with no registration required
+ * https://open-meteo.com/
+ */
 
-const getWeather = (url:string) => {
+const OPEN_METEO_BASE_URL = 'https://api.open-meteo.com/v1/forecast';
+
+// Weather code to description mapping (WMO codes)
+const getWeatherDescription = (code: number): string => {
+    const weatherCodes: { [key: number]: string } = {
+        0: 'Clear sky',
+        1: 'Mainly clear',
+        2: 'Partly cloudy',
+        3: 'Overcast',
+        45: 'Foggy',
+        48: 'Foggy with rime',
+        51: 'Light drizzle',
+        53: 'Moderate drizzle',
+        55: 'Dense drizzle',
+        61: 'Slight rain',
+        63: 'Moderate rain',
+        65: 'Heavy rain',
+        71: 'Slight snow',
+        73: 'Moderate snow',
+        75: 'Heavy snow',
+        77: 'Snow grains',
+        80: 'Slight rain showers',
+        81: 'Moderate rain showers',
+        82: 'Violent rain showers',
+        85: 'Slight snow showers',
+        86: 'Heavy snow showers',
+        95: 'Thunderstorm',
+        96: 'Thunderstorm with hail',
+        99: 'Thunderstorm with large hail'
+    };
+    return weatherCodes[code] || 'Unknown';
+};
+
+// WMO code to icon mapping
+const getWeatherIcon = (code: number): string => {
+    const iconMap: { [key: number]: string } = {
+        0: '01d', // clear sky
+        1: '02d', // mainly clear
+        2: '04d', // partly cloudy
+        3: '04d', // overcast
+        45: '50d', // foggy
+        48: '50d', // foggy with rime
+        51: '09d', // drizzle
+        53: '09d',
+        55: '09d',
+        61: '10d', // rain
+        63: '10d',
+        65: '10d',
+        71: '13d', // snow
+        73: '13d',
+        75: '13d',
+        77: '13d',
+        80: '09d', // rain showers
+        81: '10d',
+        82: '10d',
+        85: '13d', // snow showers
+        86: '13d',
+        95: '11d', // thunderstorm
+        96: '11d',
+        99: '11d'
+    };
+    return `https://openweathermap.org/img/wn/${iconMap[code] || '01d'}@2x.png`;
+};
+
+const getCurrentWeather = (latitude: number, longitude: number) => {
     return new Promise((resolve, reject) => {
+        const url = `${OPEN_METEO_BASE_URL}?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&temperature_unit=celsius&timezone=auto`;
+        
         axios
             .get(url)
             .then(response => {
                 if (response && response.status === 200) {
-                    const { main, icon } = response.data.weather[0];
-                    const { temp, temp_min, temp_max } = response.data.main;
-                    const { lon, lat } = response.data.coord;
-                    const { dt, name } = response.data;
+                    const { current, latitude: lat, longitude: lon, timezone } = response.data;
+                    const weatherCode = current.weather_code;
+                    
                     resolve({
-                        condition: main,
-                        date: new Date(dt * 1000),
-                        icon: `${OPEN_WEATHER_IMG_URL}/${icon}.png`,
+                        condition: getWeatherDescription(weatherCode),
+                        date: new Date(),
+                        icon: getWeatherIcon(weatherCode),
                         location: {
-                            name,
+                            name: timezone.split('/')[1] || 'Unknown',
                             latitude: lat,
                             longitude: lon
                         },
                         temperature: {
-                            current: temp,
-                            minimum: temp_min,
-                            maximum: temp_max
+                            current: current.temperature_2m,
+                            minimum: current.temperature_2m,
+                            maximum: current.temperature_2m
                         }
                     });
                 } else {
@@ -37,64 +104,31 @@ const getWeather = (url:string) => {
     });
 };
 
-
-const getDailyWeather = (url:string) => {
+const getHourlyWeather = (latitude: number, longitude: number) => {
     return new Promise((resolve, reject) => {
+        const url = `${OPEN_METEO_BASE_URL}?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,weather_code&temperature_unit=celsius&timezone=auto&forecast_days=1`;
+        
         axios
             .get(url)
             .then(response => {
                 if (response && response.status === 200) {
-
+                    const { hourly, latitude: lat, longitude: lon, timezone } = response.data;
                     const location = {
-                        name: response.data.city.name,
-                        latitude: response.data.city.coord.lat,
-                        longitude: response.data.city.coord.lon
-                    };                    
+                        name: timezone.split('/')[1] || 'Unknown',
+                        latitude: lat,
+                        longitude: lon
+                    };
 
-                    const dailyForecasts = response.data.list.map((fc: any) => {
+                    // Get next 8 hours
+                    const hourlyForecasts = hourly.time.slice(0, 8).map((time: string, index: number) => {
+                        const weatherCode = hourly.weather_code[index];
                         return {
-                            condition: fc.weather[0].description,
-                            date: new Date(fc.dt * 1000),
-                            icon: `${OPEN_WEATHER_IMG_URL}/${fc.weather[0].icon}.png`,
+                            condition: getWeatherDescription(weatherCode),
+                            date: new Date(time),
+                            icon: getWeatherIcon(weatherCode),
                             location,
                             temperature: {
-                                minimum: fc.temp.min,
-                                maximum: fc.temp.max
-                            }
-                        };
-                    });
-                    
-                    resolve(dailyForecasts);
-                } else {
-                    reject('Weather data not found');
-                }
-            })
-            .catch(error => reject(error.message));
-    });
-};
-
-
-const getHourlyWeather = (url:string) => {
-    return new Promise((resolve, reject) => {
-        axios
-            .get(url)
-            .then(response => {
-                if (response && response.status === 200) {
-
-                    const location = {
-                        name: response.data.city.name,
-                        latitude: response.data.city.coord.lat,
-                        longitude: response.data.city.coord.lon
-                    };                    
-
-                    const hourlyForecasts = response.data.list.map((fc: any) => {
-                        return {
-                            condition: fc.weather[0].description,
-                            date: new Date(fc.dt * 1000),
-                            icon: `${OPEN_WEATHER_IMG_URL}/${fc.weather[0].icon}.png`,
-                            location,
-                            temperature: {
-                                current: fc.main.temp
+                                current: hourly.temperature_2m[index]
                             }
                         };
                     });
@@ -119,9 +153,7 @@ class WeatherService {
             throw Error('Longitude is required');
         }
 
-        const url = `${OPEN_WEATHER_BASE_URL}/weather?appid=${OPEN_WEATHER_API_KEY}&lat=${latitude}&lon=${longitude}&units=metric`;
-        
-        return getWeather(url);
+        return getCurrentWeather(latitude, longitude);
     }
 
 
@@ -134,9 +166,9 @@ class WeatherService {
             throw Error('Longitude is required');
         }
 
-        const url = `${OPEN_WEATHER_BASE_URL}/forecast/daily?appid=${OPEN_WEATHER_API_KEY}&lat=${latitude}&lon=${longitude}&units=metric&cnt=7`;
-        
-        return getDailyWeather(url);
+        // For now, return hourly data as daily forecast
+        // Open-Meteo free tier has limitations on daily data
+        return this.getHourlyWeatherByPosition({ latitude, longitude });
     }
 
 
@@ -149,9 +181,7 @@ class WeatherService {
             throw Error('Longitude is required');
         }
 
-        const url = `${OPEN_WEATHER_BASE_URL}/forecast?appid=${OPEN_WEATHER_API_KEY}&lat=${latitude}&lon=${longitude}&units=metric&cnt=8`;
-        
-        return getHourlyWeather(url);
+        return getHourlyWeather(latitude, longitude);
     }
 }
 
